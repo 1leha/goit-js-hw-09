@@ -1,4 +1,3 @@
-import flatpickr from 'flatpickr';
 
 const refs = {
   btnStart: document.querySelector('button[data-start]'),
