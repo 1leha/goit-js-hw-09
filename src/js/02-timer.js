@@ -4,6 +4,7 @@ import 'flatpickr/dist/flatpickr.min.css';
 
 import Notiflix from 'notiflix';
 
+//Refs
 const refs = {
   input: document.getElementById('datetime-picker'),
   btnStart: document.querySelector('button[data-start]'),
@@ -12,6 +13,8 @@ const refs = {
   minutes: document.querySelector('span[data-minutes]'),
   seconds: document.querySelector('span[data-seconds]'),
 };
+
+//Messages
 const GREETING_MESSAGE1 =
   'Do you want to become younger? Fix the mistakes of the past? Or do you need to turn back time just for fun?.. ';
 const GREETING_MESSAGE2 =
@@ -19,7 +22,7 @@ const GREETING_MESSAGE2 =
 const BYE_MESSAGE = 'Good Bye! I will glad to see you next time!';
 const DONE_MESSAGE = 'Sale has started!!! Hurry or be late!';
 
-//! Тут сокрыта и закомменчена надоедалка Notiflix
+//!Commented start Notiflix message
 // Notiflix.Confirm.show(
 //   'Super-Duper countdown timer',
 //   GREETING_MESSAGE1,
@@ -42,9 +45,10 @@ const DONE_MESSAGE = 'Sale has started!!! Hurry or be late!';
 //   }
 // );
 
+//Main code
 refs.btnStart.setAttribute('disabled', '');
 
-const options = {
+const flatpickrOptions = {
   enableTime: true,
   time_24hr: true,
   defaultDate: new Date(),
@@ -62,8 +66,25 @@ const options = {
     refs.btnStart.removeAttribute('disabled', '');
   },
 };
+flatpickr('#datetime-picker', flatpickrOptions);
 
-flatpickr('#datetime-picker', options);
+const countdownTimer = new CountDownTimer({
+  selectedDate: 0,
+  updateUI: updateTimerUI,
+  inputs: controlElemrnts(refs.input, refs.btnStart),
+  alerts: alerts,
+});
+
+refs.input.addEventListener('input', e => {
+  countdownTimer.selectedDate = e.target.value;
+});
+
+refs.btnStart.addEventListener(
+  'click',
+  countdownTimer.runTimer.bind(countdownTimer)
+);
+
+//* Functions
 
 class CountDownTimer {
   constructor({ selectedDate, updateUI, inputs, alerts }) {
@@ -136,22 +157,6 @@ class CountDownTimer {
     return { days, hours, minutes, seconds };
   }
 }
-
-const countdownTimer = new CountDownTimer({
-  selectedDate: 0,
-  updateUI: updateTimerUI,
-  inputs: controlElemrnts(refs.input, refs.btnStart),
-  alerts: alerts,
-});
-
-refs.input.addEventListener('input', e => {
-  countdownTimer.selectedDate = e.target.value;
-});
-
-refs.btnStart.addEventListener(
-  'click',
-  countdownTimer.runTimer.bind(countdownTimer)
-);
 
 function updateTimerUI({ days, hours, minutes, seconds }) {
   refs.days.textContent = days;
